@@ -1,0 +1,12 @@
+# Python / venv
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# Build artifacts (산출물)
+assets/
+out/
+
+# OS
+.DS_Store
