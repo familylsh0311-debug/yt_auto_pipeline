@@ -46,3 +46,8 @@ loudnorm_stats*.txt
 *:Zone.Identifier
 # 개인 설정은 로컬에만 유지
 config.yaml
+
+# local data & scratch
+data/
+ducking.fcs
+text.txt
