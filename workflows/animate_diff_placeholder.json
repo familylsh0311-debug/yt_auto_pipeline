@@ -1,0 +1,17 @@
+{
+  "notes": "Replace with your own AnimateDiff workflow exported from ComfyUI. Set the prompt node id (text encode) via --prompt_node and (optional) neg prompt node via --neg_prompt_node.",
+  "ExampleNodes": {
+    "23": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "PROMPT_GOES_HERE"
+      }
+    },
+    "27": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "NEG_PROMPT"
+      }
+    }
+  }
+}

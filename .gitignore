@@ -39,3 +39,10 @@ checkpoints/
 node_modules/
 dist/
 build/
+.venv*/
+*.log
+loudnorm_stats*.json
+loudnorm_stats*.txt
+*:Zone.Identifier
+# 개인 설정은 로컬에만 유지
+config.yaml

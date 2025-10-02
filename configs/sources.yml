@@ -1,0 +1,18 @@
+# Minimal, API‑free sources to start. You can add adapters later.
+sources:
+  - name: seed_list
+    args:
+      file: data/seeds/evergreen_ko.txt
+      category: ai.tools
+  - name: seed_list
+    args:
+      file: data/seeds/blue_archive_ko.txt
+      category: games.blue_archive
+  - name: youtube_suggest
+    args:
+      queries: ["블루 아카이브", "AI 도구", "생성형 AI", "생산성 꿀팁"]
+      category_map:
+        블루 아카이브: games.blue_archive
+        AI 도구: ai.tools
+        생성형 AI: ai.tools
+        생산성 꿀팁: productivity

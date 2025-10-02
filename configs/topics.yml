@@ -1,0 +1,10 @@
+categories:
+  games.blue_archive: {weight: 0.25, cooldown_days: 7, max_weekly: 3}
+  ai.tools:           {weight: 0.20, cooldown_days: 5, max_weekly: 3}
+  science.weird:      {weight: 0.10, cooldown_days: 10, max_weekly: 2}
+  internet.culture:   {weight: 0.15, cooldown_days: 6, max_weekly: 2}
+  productivity:       {weight: 0.10, cooldown_days: 8, max_weekly: 2}
+  gaming.tips:        {weight: 0.20, cooldown_days: 5, max_weekly: 3}
+banned_terms: ["유출", "혐오", "개인정보"]
+language_mix: {ko: 0.9, en: 0.1}
+target_daily: 5

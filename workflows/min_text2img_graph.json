@@ -1,0 +1,33 @@
+{
+  "0": { "class_type": "CheckpointLoaderSimple",
+         "inputs": { "ckpt_name": "sd15_base.safetensors" } },
+
+  "1": { "class_type": "CLIPTextEncode",
+         "inputs": { "text": "PLACEHOLDER", "clip": ["0", 1] } },
+
+  "3": { "class_type": "CLIPTextEncode",
+         "inputs": { "text": "lowres, blurry, bad anatomy", "clip": ["0", 1] } },
+
+  "6": { "class_type": "EmptyLatentImage",
+         "inputs": { "width": 1080, "height": 1920, "batch_size": 1 } },
+
+  "2": { "class_type": "KSampler",
+         "inputs": {
+           "model": ["0", 0],
+           "positive": ["1", 0],
+           "negative": ["3", 0],
+           "latent_image": ["6", 0],
+           "seed": 123456789,
+           "steps": 25,
+           "cfg": 7.0,
+           "sampler_name": "euler",
+           "scheduler": "normal",
+           "denoise": 1.0
+         }},
+
+  "4": { "class_type": "VAEDecode",
+         "inputs": { "samples": ["2", 0], "vae": ["0", 2] } },
+
+  "5": { "class_type": "SaveImage",
+         "inputs": { "images": ["4", 0], "filename_prefix": "yt_auto" } }
+}

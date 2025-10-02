@@ -1,0 +1,4 @@
+constraints:
+  similarity_threshold: 0.8   # 0~1 (제목/키워드 유사도 상한)
+  recent_days_for_similarity: 14
+  language_mix: {ko: 0.9, en: 0.1}

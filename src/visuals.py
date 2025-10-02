@@ -1,0 +1,123 @@
+import os, json, math, subprocess, tempfile, shutil, textwrap, random
+from typing import List, Dict, Any, Optional
+from .utils.ffmpeg import run as ff
+import os
+def _enc_str(fps:int):
+  enc = os.environ.get("YT_ENCODER","").lower()
+  cq  = os.environ.get("YT_CQ","23")
+  br  = os.environ.get("YT_VBR","5M")
+  mr  = os.environ.get("YT_MAXRATE","8M")
+  bs  = os.environ.get("YT_BUFSIZE","16M")
+  pre = os.environ.get("YT_NV_PRESET","p5")
+  if enc in ("nvenc","h264_nvenc","hevc_nvenc"):
+    return f"-c:v h264_nvenc -preset {pre} -rc vbr -cq {cq} -b:v {br} -maxrate {mr} -bufsize {bs} -pix_fmt yuv420p -r {fps} -movflags +faststart"
+  return f"-c:v libx264 -preset veryfast -crf {cq} -pix_fmt yuv420p -r {fps} -movflags +faststart"
+
+import os
+def _clamp_shot_dur(x):
+    try:
+        m = float(os.getenv("SHOT_MAX_SEC", "0"))
+        return min(x, m) if m > 0 else x
+    except:
+        return x
+
+from .comfy_client import ComfyClient
+import os
+
+
+def make_text_image(text: str, size: str, out_path: str):
+    # 1) 단색 배경 생성
+    w,h = map(int, size.split("x"))
+    safe = text.replace(":", r"\:").replace("'", r"\'").replace('"', r'\"')
+
+    # glow 제거, 기본 포맷만 적용
+    cmd = (
+        f'ffmpeg -y -f lavfi -i "color=c=black:s={w}x{h}:d=1" '
+        f'-vf "format=yuv420p" -frames:v 1 "{out_path}"'
+    )
+    ff(cmd)
+
+    # 2) 같은 경로에 in-place로 쓰지 않고, 임시 파일로 만든 뒤 교체
+    tmp = out_path + ".tmp.png"
+    cmd2 = (
+        f'ffmpeg -y -i "{out_path}" -vf '
+        f'"drawtext=text=\'{safe}\':fontcolor=white:fontsize=54:'
+        f'x=(w-text_w)/2:y=h*0.7:box=1:boxcolor=0x000000AA" '
+        f'-frames:v 1 "{tmp}"'
+    )
+    ff(cmd2)
+
+    import os
+    os.replace(tmp, out_path)
+
+
+ENCODER=os.environ.get("YT_ENCODER","x264")
+
+def ken_burns_from_image(img_path: str, size: str, secs: float, out_path: str, fps: int = 30):
+    """Ken Burns 효과(줌/패닝)로 정지 이미지를 영상으로 변환"""
+    w, h = map(int, size.split("x"))
+    # 샷 길이 상한(환경변수) 적용
+    try:
+        limit = float(os.getenv("SHOT_MAX_SEC", "0"))
+        if limit > 0:
+            secs = min(secs, limit)
+    except:
+        pass
+    frames = max(1, int(round(secs * fps)))
+    cmd = (
+        f'ffmpeg -y -loop 1 -t {secs:.2f} -i "{img_path}" '
+        f'-filter_complex "zoompan=z=\'min(zoom+0.0008,1.15)\':d={frames}:'
+        f'x=\'iw/2-(iw/zoom/2)\':y=\'ih/2-(ih/zoom/2)\','
+        f'scale={w}:{h},format=yuv420p" '
+        f'-r {fps} "{out_path}"'
+    )
+    ff(cmd)
+
+def comfyui_generate_shot(client: ComfyClient, workflow_path: str, prompt_node: int, neg_node: Optional[int], prompt: str, out_img: str):
+    with open(workflow_path, "r", encoding="utf-8") as f:
+        wf = json.load(f)
+    nid = str(prompt_node)
+    if nid in wf:
+        wf[nid].setdefault("inputs", {})
+        wf[nid]["inputs"]["text"] = prompt
+    if neg_node is not None:
+        nidn = str(neg_node)
+        if nidn in wf:
+            wf[nidn].setdefault("inputs", {})
+            wf[nidn]["inputs"]["text"] = "low quality, blurry, watermark, text"
+
+    r = client.queue_prompt(wf)
+    pid = r.get("prompt_id")
+    hist = client.wait_for_complete(pid, timeout=600)
+    # Expect images in hist["outputs"][<node_id>]["images"] entries
+    outputs = hist.get("outputs", {})
+    for node_id, node_out in outputs.items():
+        imgs = node_out.get("images") or []
+        for im in imgs:
+            fn = im.get("filename")
+            sf = im.get("subfolder","")
+            if fn:
+                try:
+                    client.fetch_image(fn, sf, out_img)
+                    return True
+                except Exception as e:
+                    print("[warn] image fetch failed:", e)
+    return False
+
+def build_shot_video(text: str, prompt: str, size: str, secs: float, tmp_dir: str,
+                     use_comfy: bool=False, comfy_cfg: dict=None) -> str:
+    img_path = os.path.join(tmp_dir, "shot.png")
+    vid_path = os.path.join(tmp_dir, "shot.mp4")
+    used_comfy = False
+    if use_comfy and comfy_cfg:
+        try:
+            cc = ComfyClient(comfy_cfg["url"])
+            ok = comfyui_generate_shot(cc, comfy_cfg["workflow_path"], comfy_cfg["prompt_node"],
+                                       comfy_cfg.get("neg_prompt_node"), prompt, img_path)
+            used_comfy = bool(ok)
+        except Exception as e:
+            print("[warn] ComfyUI generation failed, falling back:", e)
+    if not used_comfy:
+        make_text_image(prompt, size, img_path)
+    ken_burns_from_image(img_path, size, secs, vid_path)
+    return vid_path

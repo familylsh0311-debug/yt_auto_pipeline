@@ -1,0 +1,3 @@
+{"shot_id": "1-1", "engine": "sdxl", "seed": 1234, "cfg": 6.5, "steps": 30, "prompt": "neon title, high contrast", "neg": "blurry"}
+{"shot_id": "2-1", "engine": "sdxl", "seed": 1234, "cfg": 6.5, "steps": 30, "prompt": "neon title, high contrast", "neg": "blurry"}
+{"shot_id": "3-1", "engine": "sdxl", "seed": 1234, "cfg": 6.5, "steps": 30, "prompt": "neon title, high contrast", "neg": "blurry"}

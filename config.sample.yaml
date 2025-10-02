@@ -1,0 +1,24 @@
+# Default config for YT Auto Pipeline
+llm:
+  provider: "template"   # one of: template | openai
+  # For openai-compatible:
+  api_base: "${LLM_API_BASE}"
+  api_key: "${LLM_API_KEY}"
+  model:   "${LLM_MODEL:qwen2.5-14b-instruct}"
+
+tts:
+  engine: "edge"         # edge | melo | pyttsx3
+  voice: "ko-KR-SunHiNeural"
+  rate: "+0%"
+  volume: "+0%"
+
+comfyui:
+  url: "http://127.0.0.1:8188"
+  workflow_path: "workflows/animate_diff_placeholder.json"
+  prompt_node: 23
+  neg_prompt_node: 27
+
+render:
+  fps: 30
+  size: "1080x1920"  # WxH
+  music: null        # path to bgm (optional)

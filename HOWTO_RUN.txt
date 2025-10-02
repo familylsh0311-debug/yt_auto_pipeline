@@ -1,0 +1,26 @@
+# 0) (권장) venv에서 의존성 설치
+pip install -r requirements-topic-engine.txt
+
+# 1) 후보 수집
+python -m src.topics.sources.run_all --config configs/sources.yml --out data/candidates.jsonl
+
+# 2) 오늘 주제 자동 선택
+python -m src.topics.daily \
+  --topics configs/topics.yml \
+  --constraints configs/constraints.yml \
+  --history data/topic_history.csv \
+  --bandit data/bandit_state.json \
+  --candidates data/candidates.jsonl \
+  --out out/queue/topic_queue.jsonl --target 5
+
+# 3) 일괄 생성(Stub 파이프라인; 네 렌더러로 교체 가능)
+python -m src.pipeline.batch --queue out/queue/topic_queue.jsonl --max 5 --nvenc
+
+# 결과물
+# - data/manifests/*.manifest.json (렌더 입력 매니페스트)
+# - manifests/*.beats.csv / *.shots.tsv / *.prompts.jsonl
+# - out/t000.mp4 (stub)
+
+# NOTE: 실제 영상까지 자동 합성하려면
+# - src/tts/batch.py 에서 OpenVoice2/melo 연동
+# - src/render/compose.py 에서 네 ffmpeg/ComfyUI 렌더러 호출

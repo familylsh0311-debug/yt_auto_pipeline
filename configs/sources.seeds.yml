@@ -1,0 +1,5 @@
+sources:
+  - name: seed_list
+    args: { file: data/seeds/evergreen_ko.txt,    category: ai.tools }
+  - name: seed_list
+    args: { file: data/seeds/blue_archive_ko.txt, category: games.blue_archive }

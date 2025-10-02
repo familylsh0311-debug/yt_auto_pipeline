@@ -1,0 +1,7 @@
+beat_id	shot_id	type	prompt/motion	duration_est	src
+1	1	img	SDXL: high contrast title card	1.2	-
+1	2	motion	AnimateDiff: fast zoom / icon pop	2.0	-
+2	1	img	SDXL: high contrast title card	1.2	-
+2	2	motion	AnimateDiff: fast zoom / icon pop	0.30000000000000004	-
+3	1	img	SDXL: high contrast title card	1.2	-
+3	2	motion	AnimateDiff: fast zoom / icon pop	0.30000000000000004	-

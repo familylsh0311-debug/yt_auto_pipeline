@@ -1,0 +1,27 @@
+[
+  {
+    "text": "우리가 매일 쓰는 비밀번호, 진짜 안전할까요?",
+    "prompt": "neon cyber city street, rainy reflections, 50mm",
+    "secs": 3.5
+  },
+  {
+    "text": "123456 같은 비밀번호는 몇 초면 뚫립니다.",
+    "prompt": "close-up of password manager UI, sleek minimal",
+    "secs": 3.5
+  },
+  {
+    "text": "2단계 인증을 켜면 보안이 기하급수적으로 올라가요.",
+    "prompt": "phone with authenticator app, dark background",
+    "secs": 3.0
+  },
+  {
+    "text": "패스워드 매니저로 길고 복잡하게, 자동 생성하세요.",
+    "prompt": "vault metaphor, solid steel vault door opens",
+    "secs": 3.0
+  },
+  {
+    "text": "오늘 바로 2FA랑 매니저 설치해보세요.",
+    "prompt": "subscribe animation, bright, playful",
+    "secs": 3.0
+  }
+]
