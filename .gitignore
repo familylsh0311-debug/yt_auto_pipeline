@@ -10,3 +10,32 @@ out/
 
 # OS
 .DS_Store
+# --- Python caches ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- Editors/OS ---
+.vscode/
+.history/
+.DS_Store
+Thumbs.db
+
+# --- Outputs / caches ---
+runs/
+out/
+logs/
+cache/
+artifacts/
+datasets/
+models/
+checkpoints/
+*.wav
+*.mp3
+*.flac
+
+# --- Node/build (있다면) ---
+node_modules/
+dist/
+build/
